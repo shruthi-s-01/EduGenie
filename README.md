@@ -43,10 +43,10 @@ EduGenie/
 ## 🛠️ Tech Stack
 
 - **Backend:** Python 3.11+, FastAPI, Pydantic
-- **AI:** Google Gemini 2.0 Flash via `google-generativeai`
+- **AI:** Google Gemini 3.8 Flash via `google-generativeai`
 - **Frontend:** HTML5, CSS3, Vanilla JavaScript
-- **Server:** Gunicorn + Uvicorn Workers
-- **Deployment:** Render
+- **Server:** Gunicorn + Uvicorn Workers / Vercel Serverless
+- **Deployment:** Vercel / Render
 
 ## 📋 Prerequisites
 
@@ -140,6 +140,13 @@ pytest tests/ -v
 ```
 
 ## 🌐 Deployment
+
+### Vercel (Recommended)
+
+1. Import your GitHub repository to [Vercel](https://vercel.com)
+2. Go to **Settings → Environment Variables**
+3. Add `GEMINI_API_KEY` with your Gemini API key value
+4. Deploy (Vercel automatically detects `vercel.json` and configures the Python serverless runtime)
 
 ### Render
 

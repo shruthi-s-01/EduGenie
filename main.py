@@ -14,8 +14,13 @@ from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
-# Load environment variables
-load_dotenv()
+# Base directory for reliable path resolution in Vercel / serverless environments
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+TEMPLATES_DIR = os.path.join(BASE_DIR, "templates")
+STATIC_DIR = os.path.join(BASE_DIR, "static")
+
+# Load environment variables (do not override system env vars)
+load_dotenv(override=False)
 
 # Configure logging
 logging.basicConfig(
@@ -24,16 +29,18 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+from ai_service import get_gemini_api_key
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Application lifecycle events."""
     # Startup
-    api_key = os.getenv("GEMINI_API_KEY")
+    api_key = get_gemini_api_key()
     if not api_key:
         logger.warning(
             "⚠️  GEMINI_API_KEY is not set. AI features will not work. "
-            "Set it in your .env file or environment variables."
+            "Set it in your environment variables or Vercel project settings."
         )
     else:
         logger.info("✅ GEMINI_API_KEY is configured")
@@ -60,11 +67,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Mount static files
-app.mount("/static", StaticFiles(directory="static"), name="static")
+# Mount static files safely
+if os.path.exists(STATIC_DIR):
+    app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
 # Templates
-templates = Jinja2Templates(directory="templates")
+templates = Jinja2Templates(directory=TEMPLATES_DIR)
 
 # Import and include routers
 from qna import router as qa_router
@@ -87,14 +95,21 @@ async def home(request: Request):
 
 
 @app.get("/health")
+@app.get("/api/diagnostic")
 async def health_check():
-    """Health check endpoint."""
-    has_api_key = bool(os.getenv("GEMINI_API_KEY"))
+    """
+    Safe health and diagnostic check endpoint.
+    Reports whether the Gemini API key is configured without exposing secret values.
+    """
+    has_api_key = bool(get_gemini_api_key())
     return {
         "status": "ok",
         "service": "EduGenie",
         "version": "1.0.0",
+        "gemini_api_key_configured": has_api_key,
         "ai_configured": has_api_key,
+        "model": os.getenv("GEMINI_MODEL", "gemini-3.8-flash"),
+        "platform": "vercel" if os.getenv("VERCEL") else "serverless/standard",
     }
 
 

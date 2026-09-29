@@ -27,6 +27,19 @@ class TestHealthCheck:
         data = response.json()
         assert data["status"] == "ok"
         assert data["service"] == "EduGenie"
+        assert "gemini_api_key_configured" in data
+
+    def test_diagnostic_endpoint(self):
+        response = client.get("/api/diagnostic")
+        assert response.status_code == 200
+        data = response.json()
+        assert data["status"] == "ok"
+        assert data["service"] == "EduGenie"
+        assert "gemini_api_key_configured" in data
+        assert "model" in data
+        # Ensure secret API key is never exposed in response
+        assert "AIza" not in response.text
+        assert "AQ." not in response.text
 
     def test_homepage_loads(self):
         response = client.get("/")

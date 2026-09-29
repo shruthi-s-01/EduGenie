@@ -16,11 +16,28 @@ PRIMARY_MODEL = os.getenv("GEMINI_MODEL", "gemini-3.8-flash")
 FALLBACK_MODELS = ["gemini-3.7-flash", "gemini-3.6-flash", "gemini-3.5-flash", "gemini-flash-latest", "gemini-flash-lite-latest"]
 
 
+def get_gemini_api_key() -> str:
+    """Retrieve and sanitize the Gemini API key from environment variables."""
+    key = (
+        os.getenv("GEMINI_API_KEY")
+        or os.getenv("GOOGLE_API_KEY")
+        or os.getenv("GEMINI_KEY")
+        or os.environ.get("GEMINI_API_KEY")
+        or os.environ.get("GOOGLE_API_KEY")
+        or ""
+    ).strip().strip("'\"")
+    return key
+
+
 def get_gemini_model(model_name: str = None):
     """Configure and return a Gemini generative model instance."""
-    api_key = os.getenv("GEMINI_API_KEY")
+    api_key = get_gemini_api_key()
     if not api_key:
-        raise ValueError("GEMINI_API_KEY environment variable is not set. Please set it in your .env file.")
+        raise ValueError(
+            "GEMINI_API_KEY environment variable is not set. "
+            "Please configure GEMINI_API_KEY in your Vercel Project Settings (Settings -> Environment Variables) "
+            "or in your local .env file."
+        )
     genai.configure(api_key=api_key)
     return genai.GenerativeModel(model_name or PRIMARY_MODEL)
 
