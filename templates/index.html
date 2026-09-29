@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduGenie - AI Educational Workspace</title>
+    <meta name="description" content="EduGenie is an AI-powered educational assistant. Learn smarter, understand faster.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <script src="/static/js/app.js" defer></script>
+</head>
+<body>
+    <header class="header">
+        <div class="container header-content">
+            <div class="logo">
+                <span class="logo-icon" aria-hidden="true">📚</span>
+                <span class="logo-text">EduGenie</span>
+            </div>
+            <nav class="nav-links" aria-label="Main Navigation">
+                <a href="#workspace">Workspace</a>
+                <a href="#features">Features</a>
+                <a href="#about">About</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="container hero-content">
+                <h1>Your AI-Powered Learning Workspace</h1>
+                <p>Master concepts, test your knowledge, and build learning paths — all powered by AI.</p>
+                <button class="btn-primary" id="start-learning-btn">Start Learning</button>
+            </div>
+        </section>
+
+        <section id="workspace" class="workspace">
+            <div class="container">
+                <div class="tool-tabs" role="tablist" aria-label="Educational Tools">
+                    <button class="tab-btn active" data-tool="qa" role="tab" aria-selected="true" aria-controls="panel-qa">
+                        <span class="tab-icon" aria-hidden="true">📝</span>
+                        <span class="tab-label">Ask</span>
+                    </button>
+                    <button class="tab-btn" data-tool="explain" role="tab" aria-selected="false" aria-controls="panel-explain">
+                        <span class="tab-icon" aria-hidden="true">💡</span>
+                        <span class="tab-label">Explain</span>
+                    </button>
+                    <button class="tab-btn" data-tool="quiz" role="tab" aria-selected="false" aria-controls="panel-quiz">
+                        <span class="tab-icon" aria-hidden="true">🧩</span>
+                        <span class="tab-label">Quiz</span>
+                    </button>
+                    <button class="tab-btn" data-tool="summarize" role="tab" aria-selected="false" aria-controls="panel-summarize">
+                        <span class="tab-icon" aria-hidden="true">📄</span>
+                        <span class="tab-label">Summarize</span>
+                    </button>
+                    <button class="tab-btn" data-tool="learn" role="tab" aria-selected="false" aria-controls="panel-learn">
+                        <span class="tab-icon" aria-hidden="true">🗺️</span>
+                        <span class="tab-label">Learn Path</span>
+                    </button>
+                </div>
+
+                <div class="panels-container">
+                    <!-- Q&A Panel -->
+                    <div id="panel-qa" class="panel active" role="tabpanel" tabindex="0">
+                        <div class="panel-header">
+                            <h2>Ask a Question</h2>
+                            <p>Get clear, detailed answers to your educational questions.</p>
+                        </div>
+                        <div class="panel-body">
+                            <div class="input-group">
+                                <label for="qa-input" class="sr-only">Your Question</label>
+                                <textarea id="qa-input" placeholder="Type your question here... e.g., What is photosynthesis?" maxlength="2000"></textarea>
+                                <div class="char-counter" aria-live="polite"><span id="qa-counter">0</span> / 2000</div>
+                            </div>
+                            <button class="btn-primary submit-btn" id="qa-submit" onclick="askQuestion()">Get Answer</button>
+                            
+                            <div id="qa-loading" class="loading-state hidden" aria-live="assertive">
+                                <div class="spinner"></div>
+                                <span>Thinking...</span>
+                            </div>
+                            
+                            <div id="qa-error" class="error-area hidden" aria-live="assertive"></div>
+                            <div id="qa-result" class="result-area hidden" aria-live="polite"></div>
+                        </div>
+                    </div>
+
+                    <!-- Explain Panel -->
+                    <div id="panel-explain" class="panel hidden" role="tabpanel" tabindex="0">
+                        <div class="panel-header">
+                            <h2>Explain a Concept</h2>
+                            <p>Get a clear, simple explanation of any complex topic.</p>
+                        </div>
+                        <div class="panel-body">
+                            <div class="input-group">
+                                <label for="explain-input" class="sr-only">Concept</label>
+                                <input type="text" id="explain-input" placeholder="Enter a concept... e.g., Quantum Entanglement" maxlength="1000">
+                                <div class="char-counter" aria-live="polite"><span id="explain-counter">0</span> / 1000</div>
+                            </div>
+                            <button class="btn-primary submit-btn" id="explain-submit" onclick="explainConcept()">Explain It</button>
+                            
+                            <div id="explain-loading" class="loading-state hidden" aria-live="assertive">
+                                <div class="spinner"></div>
+                                <span>Thinking...</span>
+                            </div>
+                            
+                            <div id="explain-error" class="error-area hidden" aria-live="assertive"></div>
+                            <div id="explain-result" class="result-area hidden" aria-live="polite"></div>
+                        </div>
+                    </div>
+
+                    <!-- Quiz Panel -->
+                    <div id="panel-quiz" class="panel hidden" role="tabpanel" tabindex="0">
+                        <div class="panel-header">
+                            <h2>Generate a Quiz</h2>
+                            <p>Test your knowledge with AI-generated questions.</p>
+                        </div>
+                        <div class="panel-body">
+                            <div class="input-group">
+                                <label for="quiz-input" class="sr-only">Topic</label>
+                                <input type="text" id="quiz-input" placeholder="Enter a topic... e.g., World War II" maxlength="500">
+                                <div class="char-counter" aria-live="polite"><span id="quiz-counter">0</span> / 500</div>
+                            </div>
+                            <button class="btn-primary submit-btn" id="quiz-submit" onclick="generateQuiz()">Generate Quiz</button>
+                            
+                            <div id="quiz-loading" class="loading-state hidden" aria-live="assertive">
+                                <div class="spinner"></div>
+                                <span>Thinking...</span>
+                            </div>
+                            
+                            <div id="quiz-error" class="error-area hidden" aria-live="assertive"></div>
+                            <div id="quiz-result" class="result-area hidden" aria-live="polite"></div>
+                        </div>
+                    </div>
+
+                    <!-- Summarize Panel -->
+                    <div id="panel-summarize" class="panel hidden" role="tabpanel" tabindex="0">
+                        <div class="panel-header">
+                            <h2>Summarize Text</h2>
+                            <p>Condense long passages into clear, concise summaries.</p>
+                        </div>
+                        <div class="panel-body">
+                            <div class="input-group">
+                                <label for="summarize-input" class="sr-only">Text to Summarize</label>
+                                <textarea id="summarize-input" placeholder="Paste your text here (minimum 10 characters)..." maxlength="10000"></textarea>
+                                <div class="char-counter" aria-live="polite"><span id="summarize-counter">0</span> / 10000</div>
+                            </div>
+                            <button class="btn-primary submit-btn" id="summarize-submit" onclick="summarizeText()">Summarize</button>
+                            
+                            <div id="summarize-loading" class="loading-state hidden" aria-live="assertive">
+                                <div class="spinner"></div>
+                                <span>Thinking...</span>
+                            </div>
+                            
+                            <div id="summarize-error" class="error-area hidden" aria-live="assertive"></div>
+                            <div id="summarize-result" class="result-area hidden" aria-live="polite"></div>
+                        </div>
+                    </div>
+
+                    <!-- Learn Path Panel -->
+                    <div id="panel-learn" class="panel hidden" role="tabpanel" tabindex="0">
+                        <div class="panel-header">
+                            <h2>Build a Learning Path</h2>
+                            <p>Get a structured roadmap to master any subject.</p>
+                        </div>
+                        <div class="panel-body">
+                            <div class="input-group">
+                                <label for="learn-input" class="sr-only">Subject</label>
+                                <input type="text" id="learn-input" placeholder="Enter a subject... e.g., Machine Learning" maxlength="500">
+                                <div class="char-counter" aria-live="polite"><span id="learn-counter">0</span> / 500</div>
+                            </div>
+                            <button class="btn-primary submit-btn" id="learn-submit" onclick="generateLearningPath()">Create Path</button>
+                            
+                            <div id="learn-loading" class="loading-state hidden" aria-live="assertive">
+                                <div class="spinner"></div>
+                                <span>Thinking...</span>
+                            </div>
+                            
+                            <div id="learn-error" class="error-area hidden" aria-live="assertive"></div>
+                            <div id="learn-result" class="result-area hidden" aria-live="polite"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="features" class="features">
+            <div class="container">
+                <h2 class="section-title">What EduGenie Can Do</h2>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon" aria-hidden="true">📝</div>
+                        <h3>Ask</h3>
+                        <p>Get clear, detailed answers to your educational questions.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon" aria-hidden="true">💡</div>
+                        <h3>Explain</h3>
+                        <p>Get a clear, simple explanation of any complex topic.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon" aria-hidden="true">🧩</div>
+                        <h3>Quiz</h3>
+                        <p>Test your knowledge with AI-generated questions.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon" aria-hidden="true">📄</div>
+                        <h3>Summarize</h3>
+                        <p>Condense long passages into clear, concise summaries.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon" aria-hidden="true">🗺️</div>
+                        <h3>Learn Path</h3>
+                        <p>Get a structured roadmap to master any subject.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="about" class="about">
+            <div class="container">
+                <h2 class="section-title">About EduGenie</h2>
+                <p class="about-desc">EduGenie is an AI-powered educational assistant designed to help you learn smarter and understand faster. It provides a dedicated workspace for knowledge mastery, helping you tackle complex topics with ease.</p>
+                <div class="tech-stack">
+                    <span class="badge">FastAPI</span>
+                    <span class="badge">Python</span>
+                    <span class="badge">Gemini AI</span>
+                    <span class="badge">HTML/CSS/JS</span>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container footer-content">
+            <p>&copy; 2026 EduGenie. Built for learners, by learners.</p>
+            <a href="https://github.com/shruthi-s-01/EduGenie" target="_blank" rel="noopener noreferrer" class="github-link">GitHub</a>
+        </div>
+    </footer>
+</body>
+</html>
