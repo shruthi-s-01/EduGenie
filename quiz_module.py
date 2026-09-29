@@ -96,12 +96,12 @@ async def generate_quiz(request: QuizRequest):
             '- "options": an array of exactly 4 distinct answer strings\n'
             '- "correct_answer": a string that exactly matches one of the 4 options\n\n'
             "Requirements:\n"
-            "- Questions should test understanding, not just recall\n"
+            "- Keep questions and options concise and clear\n"
             "- Distractors (wrong options) should be plausible\n"
             "- Cover different aspects of the topic\n\n"
             "Respond with ONLY the JSON array:"
         )
-        raw_response = await generate_response(prompt, max_tokens=1500)
+        raw_response = await generate_response(prompt, max_tokens=3000)
         parsed = parse_json_response(raw_response)
         validated = validate_quiz_data(parsed)
         return QuizResponse(questions=[QuizQuestion(**q) for q in validated])
