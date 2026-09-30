@@ -1,7 +1,6 @@
 # EduGenie 🎓
 
 **AI-Powered Educational Assistant** — Learn smarter. Understand faster.
-
 EduGenie is an intelligent learning workspace that helps students, self-learners, and educators master concepts, test knowledge, and build structured learning paths — all powered by Google's Gemini AI.
 
 ## ✨ Features
